@@ -1,8 +1,14 @@
+from dotenv import load_dotenv
 from sqlmodel import SQLModel, create_engine, Session
+import os
 
-DATABASE_URL = "postgresql+psycopg2://postgres:root@localhost:5432/resumeai_db"
+load_dotenv()
 
-engine= create_engine(DATABASE_URL, echo=True)
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL environment variable is not set")
+
+engine = create_engine(DATABASE_URL, echo=True)
 
 def init_db():
     SQLModel.metadata.create_all(engine)

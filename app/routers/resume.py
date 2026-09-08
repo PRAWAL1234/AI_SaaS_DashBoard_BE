@@ -8,7 +8,14 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from app.routers.models.resumeModel import Resume
+from dotenv import load_dotenv
 
+load_dotenv()
+
+Google_API_Key = os.getenv("Google_api_key")
+if not Google_API_Key:
+    raise RuntimeError("Google_API_Key environment variable is not set")
+    
 router = APIRouter(
     prefix="/resume",
     tags=["Resume"]
@@ -22,7 +29,7 @@ class ResumeAnalysisResponse(BaseModel):
     actionable_steps: List[str] = Field(description="Bullet points on what the user should fix next")
 
 parser = JsonOutputParser(pydantic_object=ResumeAnalysisResponse)
-llm = ChatGoogleGenerativeAI(model='gemini-2.5-flash', api_key="AQ.Ab8RN6LJ1AB8nfE-ZexkAF8DtBXROMe0P5ecBW_jRaN7REz79Q")
+llm = ChatGoogleGenerativeAI(model='gemini-2.5-flash', api_key=Google_API_Key)
 
 prompt = ChatPromptTemplate.from_messages([
     ("system", "You are an expert ATS (Applicant Tracking System) optimizer and HR manager. "
